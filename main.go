@@ -5,20 +5,27 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/manabie-com/togo/infra/config"
 	"github.com/manabie-com/togo/internal/services"
 	sqllite "github.com/manabie-com/togo/internal/storages/sqlite"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
+	cfg, err := config.LoadConfig("./config")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
 	db, err := sql.Open("sqlite3", "./data.db")
 	if err != nil {
 		log.Fatal("error opening db", err)
 	}
 
 	http.ListenAndServe(":5050", &services.ToDoService{
-		JWTKey: "wqGyEBBfPK9w3Lxw",
+		MaxTaskes: cfg.Todo.MaxTaskes,
+		JWTKey:    "wqGyEBBfPK9w3Lxw",
 		Store: &sqllite.LiteDB{
 			DB: db,
 		},
