@@ -1,5 +1,5 @@
 database:
   type: postgres
 
-todo:
-  max_taskes_in_a_day: 5
+task:
+  max_in_the_day: 5

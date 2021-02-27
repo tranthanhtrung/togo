@@ -9,9 +9,9 @@ type Config struct {
 	Database struct {
 		Type string `mapstructure:"type"`
 	} `mapstructure:"database"`
-	Todo struct {
-		MaxTaskes int `mapstructure:"max_taskes_in_a_day"`
-	} `mapstructure:"todo"`
+	Task struct {
+		MaxInTheDay int `mapstructure:"max_in_the_day"`
+	} `mapstructure:"task"`
 }
 
 // LoadConfig load config from file
