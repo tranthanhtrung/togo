@@ -1,0 +1,1 @@
+exports.BASEURL = "localhost:5050"

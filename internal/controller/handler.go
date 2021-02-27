@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	todoerr "github.com/manabie-com/togo/internal/httperror"
 	"github.com/manabie-com/togo/internal/services"
 )
 
@@ -34,7 +35,7 @@ func (h *Handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		var ok bool
 		req, ok = h.Identity.ValidToken(req)
 		if !ok {
-			resp.WriteHeader(http.StatusUnauthorized)
+			todoerr.WrapError(resp, http.StatusUnauthorized, "Unauthorized")
 			return
 		}
 
@@ -44,6 +45,9 @@ func (h *Handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 		case http.MethodPost:
 			h.ToDo.AddTask(resp, req)
 		}
+		return
+	default:
+		todoerr.WrapError(resp, http.StatusNotFound, "Not fould")
 		return
 	}
 }

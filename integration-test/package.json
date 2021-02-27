@@ -1,0 +1,23 @@
+{
+  "name": "integration-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tranthanhtrung/demo-cypress.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tranthanhtrung/demo-cypress/issues"
+  },
+  "homepage": "https://github.com/tranthanhtrung/demo-cypress#readme",
+  "devDependencies": {
+    "cypress": "^6.5.0"
+  }
+}
