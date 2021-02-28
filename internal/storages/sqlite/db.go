@@ -49,6 +49,17 @@ func (l *LiteDB) AddTask(ctx context.Context, t *storages.Task) error {
 	return nil
 }
 
+// DeleteTask deletes a task to DB
+func (l *LiteDB) DeleteTask(ctx context.Context, id string) error {
+	stmt := `DELETE FROM tasks WHERE id=?`
+	_, err := l.DB.ExecContext(ctx, stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ValidateUser returns tasks if match userID AND password
 func (l *LiteDB) ValidateUser(ctx context.Context, userID, pwd sql.NullString) bool {
 	stmt := `SELECT id FROM users WHERE id = ? AND password = ?`

@@ -17,15 +17,15 @@ import (
 
 // ToDoService implement HTTP server
 type ToDoService struct {
-	MaxTaskes int
-	Store     *sqllite.LiteDB
+	MaxTasks int
+	Store    *sqllite.LiteDB
 }
 
 // NewToDoService create a ToDoService
-func NewToDoService(maxTaskes int, store *sqllite.LiteDB) *ToDoService {
+func NewToDoService(maxTasks int, store *sqllite.LiteDB) *ToDoService {
 	return &ToDoService{
-		MaxTaskes: maxTaskes,
-		Store:     store,
+		MaxTasks: maxTasks,
+		Store:    store,
 	}
 }
 
@@ -85,21 +85,39 @@ func (s *ToDoService) AddTask(resp http.ResponseWriter, req *http.Request) {
 		todoerr.WrapError(resp, http.StatusInternalServerError, err.Error())
 		return
 	}
-	if len(tasks) > s.MaxTaskes {
-		todoerr.WrapError(resp, http.StatusBadRequest, fmt.Sprintf("Limit %d task per day", s.MaxTaskes))
+	if len(tasks) >= s.MaxTasks {
+		todoerr.WrapError(resp, http.StatusBadRequest, fmt.Sprintf("Limit %d task per day", s.MaxTasks))
 		return
 	}
 
 	err = s.Store.AddTask(req.Context(), task)
 	if err != nil {
-		resp.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(resp).Encode(map[string]string{
-			"error": err.Error(),
-		})
+		todoerr.WrapError(resp, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	json.NewEncoder(resp).Encode(map[string]*storages.Task{
 		"data": task,
+	})
+}
+
+// DeleteTask delete a task of a user
+func (s *ToDoService) DeleteTask(resp http.ResponseWriter, req *http.Request) {
+	task := &storages.Task{}
+	err := json.NewDecoder(req.Body).Decode(task)
+	defer req.Body.Close()
+	if err != nil {
+		resp.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = s.Store.DeleteTask(req.Context(), task.ID)
+	if err != nil {
+		todoerr.WrapError(resp, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	json.NewEncoder(resp).Encode(map[string]string{
+		"id": task.ID,
 	})
 }

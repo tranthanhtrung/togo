@@ -44,6 +44,8 @@ func (h *Handler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
 			h.ToDo.ListTasks(resp, req)
 		case http.MethodPost:
 			h.ToDo.AddTask(resp, req)
+		case http.MethodDelete:
+			h.ToDo.DeleteTask(resp, req)
 		}
 		return
 	default:
