@@ -1,0 +1,27 @@
+version: '3.5'
+
+services:
+  app:
+    image: golang:1.15.3
+    container_name: todo-docker
+    ports:
+      - "5050:5050"
+    volumes:
+      - .:/go/src/togo
+    working_dir: /go/src/togo
+    # config type db in config.yaml file
+    command: go run main.go
+    depends_on:
+      - postgresql
+  postgresql:
+    image: postgres:12.2-alpine
+    container_name: postgres-docker
+    environment:
+      - POSTGRES_USER=todo
+      - POSTGRES_PASSWORD=todo
+      - POSTGRES_DB=datatogo
+    ports:
+      - 5432:5432
+    restart: always
+
+  
