@@ -10,18 +10,18 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 
 	todoerr "github.com/manabie-com/togo/internal/httperror"
-	sqllite "github.com/manabie-com/togo/internal/storages/sqlite"
+	"github.com/manabie-com/togo/internal/storages/sql"
 	"github.com/manabie-com/togo/utils"
 )
 
 // IdentityService implement HTTP server
 type IdentityService struct {
 	JWTKey string
-	Store  *sqllite.LiteDB
+	Store  *sql.Database
 }
 
 // NewIdentitySerice create new IdentityService
-func NewIdentitySerice(jwtKey string, store *sqllite.LiteDB) *IdentityService {
+func NewIdentitySerice(jwtKey string, store *sql.Database) *IdentityService {
 	return &IdentityService{
 		JWTKey: jwtKey,
 		Store:  store,

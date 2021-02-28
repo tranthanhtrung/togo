@@ -7,7 +7,12 @@ import (
 // Config reprepare for type config app
 type Config struct {
 	Database struct {
-		Type string `mapstructure:"type"`
+		Type     string `mapstructure:"type"`
+		Host     string `mapstructure:"host"`
+		User     string `mapstructure:"user"`
+		Password string `mapstructure:"password"`
+		DBName   string `mapstructure:"dbname"`
+		Port     int    `mapstructure:"port"`
 	} `mapstructure:"database"`
 	Task struct {
 		MaxInTheDay int `mapstructure:"max_in_the_day"`
@@ -26,6 +31,7 @@ func LoadConfig(path string) (config Config, err error) {
 	if err != nil {
 		return
 	}
+
 	err = viper.Unmarshal(&config)
 	return
 }

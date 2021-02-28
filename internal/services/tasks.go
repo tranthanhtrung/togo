@@ -11,18 +11,18 @@ import (
 
 	todoerr "github.com/manabie-com/togo/internal/httperror"
 	"github.com/manabie-com/togo/internal/storages"
-	sqllite "github.com/manabie-com/togo/internal/storages/sqlite"
+	todosql "github.com/manabie-com/togo/internal/storages/sql"
 	"github.com/manabie-com/togo/utils"
 )
 
 // ToDoService implement HTTP server
 type ToDoService struct {
 	MaxTasks int
-	Store    *sqllite.LiteDB
+	Store    *todosql.Database
 }
 
 // NewToDoService create a ToDoService
-func NewToDoService(maxTasks int, store *sqllite.LiteDB) *ToDoService {
+func NewToDoService(maxTasks int, store *todosql.Database) *ToDoService {
 	return &ToDoService{
 		MaxTasks: maxTasks,
 		Store:    store,

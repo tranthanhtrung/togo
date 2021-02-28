@@ -1,5 +1,9 @@
 database:
   type: postgres
-
+  host: localhost
+  user: todo
+  password: todo
+  dbname: todo
+  port: 5432
 task:
   max_in_the_day: 5

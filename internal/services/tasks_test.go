@@ -2,60 +2,47 @@ package services
 
 import (
 	"bytes"
-	"database/sql"
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
-
-	sqllite "github.com/manabie-com/togo/internal/storages/sqlite"
 )
 
-func TestToDoService(t *testing.T) {
-	db, err := sql.Open("sqlite3", "./../../data.db")
-	if err != nil {
-		log.Fatal("error opening db", err)
-	}
+const (
+	MaxTasksInTheDay = 2
+)
 
-	store := &sqllite.LiteDB{DB: db}
-	todo := NewToDoService(2, store)
+func TestListTask(t *testing.T) {
+	store := mockDB()
+	todo := NewToDoService(MaxTasksInTheDay, store)
 
-	// Test List task
 	handler := http.HandlerFunc(todo.ListTasks)
-	req, err := http.NewRequest("GET", "/tasks?created_date=2021-02-27", nil)
+	req, err := http.NewRequest("GET", "/tasks?created_date=2021-02-28", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("Get list tasks.\n Expect: %v, actual: %v",
-			http.StatusOK, status)
-	}
-	if !strings.Contains(rr.Body.String(), "data") {
-		t.Errorf("Get list tasks.\n Expect: %v, actual: %v", "{data: Array}", rr.Body.String())
-	}
+	assertStatusCode(t, http.StatusOK, rr.Code)
+	assertResponseContain(t, "data", rr.Body.String())
+}
 
-	// Test Add task
-	handler = http.HandlerFunc(todo.AddTask)
+func TestToDoService(t *testing.T) {
+	store := mockDB()
+	todo := NewToDoService(MaxTasksInTheDay, store)
+
+	handler := http.HandlerFunc(todo.AddTask)
 	body := []byte(`{"content": "Some content"}`)
-	req, err = http.NewRequest("POST", "/task", bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", "/task", bytes.NewBuffer(body))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	rr = httptest.NewRecorder()
+	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("Add task.\n Expect: %v, actual: %v",
-			http.StatusOK, status)
-	}
-	if !strings.Contains(rr.Body.String(), "Some content") {
-		t.Errorf("Add task.\n Expect: %v, actual: %v", "{data: string}", rr.Body.String())
-	}
+	assertStatusCode(t, http.StatusOK, rr.Code)
+	assertResponseContain(t, "Some content", rr.Body.String())
 }

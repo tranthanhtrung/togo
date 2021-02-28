@@ -13,7 +13,7 @@ describe('[Login] Create Task', function() {
     })
   })
 
-  it('Create a task for user', function() {
+  it('Add a task for user', function() {
     cy.request({
       method: 'POST',
       url: BASEURL + '/tasks',
@@ -33,7 +33,7 @@ describe('[Login] Create Task', function() {
     })
   })
   
-  it('Create a task after having 5 limit tasks', async function() {
+  it('Add a task quota exceed limit tasks', async function() {
     let promises = []
     for(let i = 0; i < 5; i++) {
       promises.push(cy.addTask(BASEURL, token))
